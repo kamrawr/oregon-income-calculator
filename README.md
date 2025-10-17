@@ -2,6 +2,14 @@
 
 A comprehensive web-based tool for calculating income eligibility for various Oregon state programs and assistance benefits.
 
+## ⚠️ Important Disclaimer
+
+**This tool is for informational purposes only.** Income eligibility requirements may only apply in eligible Energy Trust of Oregon utility territories and through partnerships with specific community-based organizations or contractors.
+
+For official program information and to verify eligibility requirements in your area, please visit: [Energy Trust of Oregon](https://www.energytrust.org/)
+
+Always consult with program administrators for the most current eligibility criteria and application processes.
+
 ## Features
 
 - **Interactive Calculator**: Calculate eligibility based on household size and income
