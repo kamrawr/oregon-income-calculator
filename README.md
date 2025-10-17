@@ -22,7 +22,7 @@ Simply open the tool in your web browser and:
 
 ## Live Demo
 
-Visit the live tool: [Oregon Income Calculator](https://your-username.github.io/oregon-income-calculator/)
+Visit the live tool: [Oregon Income Calculator](https://kamrawr.github.io/oregon-income-calculator/)
 
 ## Technology
 
