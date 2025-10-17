@@ -561,49 +561,82 @@
         .small { font-size: 12px; }
         .muted { color: #aab2c0; }
         
-        /* Disclaimer Section */
-        .disclaimer-section {
+        /* Sample Demo Section */
+        .sample-demo-section {
             max-width: 1200px;
-            margin: 0 auto 2rem;
+            margin: 0 auto 1.5rem;
             padding: 0 1rem;
         }
         
-        .disclaimer-content {
-            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
-            border: 2px solid #fdcb6e;
-            border-radius: 15px;
-            padding: 1.5rem;
+        .sample-demo-content {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border: 1px solid #2196f3;
+            border-radius: 10px;
+            padding: 1rem;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(253, 203, 110, 0.3);
         }
         
-        .disclaimer-content h2 {
-            color: #d63031;
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
+        .sample-checkbox {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: #1565c0;
+            font-weight: 500;
         }
         
-        .disclaimer-content p {
+        .sample-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #2196f3;
+            cursor: pointer;
+        }
+        
+        .sample-checkbox:hover {
+            color: #0d47a1;
+        }
+        
+        /* Footer Disclaimer */
+        .footer-disclaimer {
+            max-width: 1200px;
+            margin: 2rem auto 1rem;
+            padding: 0 1rem;
+        }
+        
+        .footer-disclaimer .disclaimer-content {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: none;
+        }
+        
+        .footer-disclaimer .disclaimer-content h3 {
+            color: #495057;
             margin-bottom: 0.75rem;
-            color: #2d3436;
-            line-height: 1.5;
-        }
-        
-        .disclaimer-content p:last-child {
-            margin-bottom: 0;
-        }
-        
-        .disclaimer-content a {
-            color: #0f4c75;
+            font-size: 1rem;
             font-weight: 600;
+        }
+        
+        .footer-disclaimer .disclaimer-content p {
+            margin-bottom: 0;
+            color: #6c757d;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .footer-disclaimer .disclaimer-content a {
+            color: #0f4c75;
             text-decoration: none;
-            border-bottom: 1px solid #3282b8;
+            border-bottom: 1px dotted #3282b8;
             transition: all 0.3s ease;
         }
         
-        .disclaimer-content a:hover {
+        .footer-disclaimer .disclaimer-content a:hover {
             color: #3282b8;
-            border-bottom-color: #0f4c75;
+            border-bottom-style: solid;
         }
 </style>
 <style>
@@ -630,15 +663,18 @@
 </h1>
 <p>Determine eligibility for energy assistance and housing programs • Updated August 2025</p>
 </div>
-<!-- Disclaimer Section -->
-<div class="disclaimer-section">
-    <div class="disclaimer-content">
-        <h2>⚠️ Important Disclaimer</h2>
-        <p><strong>This tool is for informational purposes only.</strong> Income eligibility requirements may only apply in eligible Energy Trust of Oregon utility territories and through partnerships with specific community-based organizations or contractors.</p>
-        <p>For official program information and to verify eligibility requirements in your area, please visit: <a href="https://www.energytrust.org/" target="_blank" rel="noopener noreferrer">Energy Trust of Oregon</a></p>
-        <p class="small muted">Always consult with program administrators for the most current eligibility criteria and application processes.</p>
+
+<!-- Sample Household Demo -->
+<div class="sample-demo-section">
+    <div class="sample-demo-content">
+        <label class="sample-checkbox">
+            <input type="checkbox" id="useSampleData" onchange="toggleSampleData()"> 
+            <span class="checkmark"></span>
+            Try a sample household (Family of 4 in Multnomah County, $65,000/year)
+        </label>
     </div>
 </div>
+
 
 <div class="calculator-container">
 <div class="main-calculator">
@@ -808,6 +844,14 @@
                         </div>
 </div>
 </div>
+</div>
+
+<!-- Footer Disclaimer -->
+<div class="footer-disclaimer">
+    <div class="disclaimer-content">
+        <h3>💡 Please Note</h3>
+        <p>This calculator is provided for informational purposes to help estimate program eligibility. Requirements may vary by utility territory and program administrator. For official eligibility verification and program details, please contact <a href="https://www.energytrust.org/" target="_blank" rel="noopener noreferrer">Energy Trust of Oregon</a> or your local program provider.</p>
+    </div>
 </div>
 </div>
 </div>
@@ -1253,6 +1297,56 @@
                     otherHeader.nextElementSibling.classList.remove('active');
                 }
             });
+        }
+
+        // Sample household data
+        function toggleSampleData() {
+            const checkbox = document.getElementById('useSampleData');
+            const countySelect = document.getElementById('county');
+            const householdSelect = document.getElementById('householdSize');
+            const incomeInput = document.getElementById('income');
+            const frequencySelect = document.getElementById('frequency');
+            const pretaxRadio = document.querySelector('input[name="taxStatus"][value="pretax"]');
+            
+            if (checkbox.checked) {
+                // Set sample data
+                countySelect.value = 'Multnomah County';
+                householdSelect.value = '4';
+                incomeInput.value = '65000';
+                frequencySelect.value = 'annual';
+                pretaxRadio.checked = true;
+                
+                // Update county info
+                updateCountyInfo();
+                
+                // Auto-calculate after a brief delay
+                setTimeout(() => {
+                    calculateEligibility();
+                }, 300);
+            } else {
+                // Clear the form
+                countySelect.value = '';
+                householdSelect.value = '2';
+                incomeInput.value = '';
+                frequencySelect.value = 'annual';
+                pretaxRadio.checked = true;
+                
+                // Update county info and clear results
+                updateCountyInfo();
+                document.getElementById('results-content').innerHTML = `
+                    <div style="text-align: center; color: #666; padding: 2rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
+                        <p>Enter your information and click "Calculate Eligibility" to see your results.</p>
+                    </div>
+                `;
+                document.getElementById('thresholdTables').innerHTML = '<p style="color: #666; text-align: center; padding: 2rem;">Calculate eligibility to see thresholds</p>';
+                
+                // Destroy chart if it exists
+                if (comparisonChart) {
+                    comparisonChart.destroy();
+                    comparisonChart = null;
+                }
+            }
         }
 
         // Event listeners
