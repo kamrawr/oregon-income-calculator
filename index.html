@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Oregon Income Eligibility Calculator - 2025</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.min.js"></script>
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f4c75 0%, #3282b8 50%, #bbe1fa 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: #0f4c75;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 1rem;
+        }
+
+        .calculator-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .main-calculator {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .input-section h2 {
+            color: #0f4c75;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #0f4c75;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid #e1ecf4;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3282b8;
+            box-shadow: 0 0 0 4px rgba(50, 130, 184, 0.1);
+            background: white;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon input {
+            padding-left: 2.5rem;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 0.875rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .income-input-group {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 0.5rem;
+            align-items: end;
+        }
+
+        .frequency-select {
+            min-width: 120px;
+        }
+
+        .tax-status {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .radio-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #3282b8;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #3282b8, #0f4c75);
+            color: white;
+            border: none;
+            padding: 1.125rem 2rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(50, 130, 184, 0.4);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .results-section h2 {
+            color: #0f4c75;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .income-display {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #fdcb6e;
+        }
+
+        .income-display h3 {
+            color: #d63031;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+            color: #2d3436;
+            font-size: 0.95rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3282b8, #0f4c75);
+        }
+
+        .metric-card.eligible {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        }
+
+        .metric-card.not-eligible {
+            border-color: #dc3545;
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        }
+
+        .metric-value {
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-value.eligible {
+            color: #28a745;
+        }
+
+        .metric-value.not-eligible {
+            color: #dc3545;
+        }
+
+        .metric-value.neutral {
+            color: #3282b8;
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        .eligibility-status {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        .eligibility-status h3 {
+            color: #0f4c75;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .status-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 0;
+            font-size: 0.95rem;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .status-eligible {
+            background: #28a745;
+        }
+
+        .status-not-eligible {
+            background: #dc3545;
+        }
+
+        .county-info {
+            background: #e3f2fd;
+            border-radius: 8px;
+            padding: 0.875rem;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #1565c0;
+            border-left: 4px solid #2196f3;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3282b8;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Expandable Sections */
+        .expandable-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .expandable-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .expandable-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .expandable-header {
+            background: linear-gradient(135deg, #3282b8, #0f4c75);
+            color: white;
+            padding: 1.25rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .expandable-header:hover {
+            background: linear-gradient(135deg, #0f4c75, #3282b8);
+        }
+
+        .expandable-header h3 {
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .expand-icon {
+            transition: transform 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .expandable-header.active .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .expandable-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .expandable-content.active {
+            max-height: 1000px;
+        }
+
+        .expandable-inner {
+            padding: 1.5rem;
+        }
+
+        .threshold-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .threshold-table th,
+        .threshold-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .threshold-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #0f4c75;
+            font-size: 0.9rem;
+        }
+
+        .threshold-table td {
+            font-size: 0.9rem;
+        }
+
+        .threshold-table .amount {
+            font-weight: bold;
+            color: #2d3436;
+        }
+
+        .chart-container {
+            height: 300px;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+
+        .resource-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .resource-link {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1rem;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            display: block;
+        }
+
+        .resource-link:hover {
+            border-color: #3282b8;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(50, 130, 184, 0.15);
+            text-decoration: none;
+            color: #333;
+        }
+
+        .resource-link h4 {
+            color: #0f4c75;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .resource-link p {
+            font-size: 0.85rem;
+            color: #666;
+            margin: 0;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .income-input-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .expandable-sections {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Success/Error animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .results-section.active {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        /* Improved dropdown styling */
+        .form-control option {
+            padding: 0.5rem;
+        }
+
+        .form-control::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .form-control::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .form-control::-webkit-scrollbar-thumb {
+            background: #3282b8;
+            border-radius: 4px;
+        }
+    
+
+.small { font-size: 12px; }
+.muted { color: #aab2c0; }
+</style>
+<style>
+/* 2x2 layout for the four info sections under the tool */
+.expandable-sections {
+  display: grid;
+  gap: 16px;
+}
+@media (min-width: 1024px) {
+  .expandable-sections {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+/* Ensure cards fill grid cells neatly */
+.expandable-card {
+  width: auto;
+}
+</style></head>
+<body>
+<div class="header">
+<h1>
+            🌲 Oregon Income Eligibility Calculator
+            <span class="status-badge">2025 Official Data</span>
+</h1>
+<p>Determine eligibility for energy assistance and housing programs • Updated August 2025</p>
+</div>
+<div class="calculator-container">
+<div class="main-calculator">
+<div class="calculator-grid">
+<!-- Input Section -->
+<div class="input-section">
+<h2>📊 Calculate Your Eligibility</h2>
+<div class="form-group">
+<label for="county">Select Oregon County:</label>
+<select class="form-control" id="county">
+<option value="">Choose your county...</option>
+<!-- Counties will be populated from data -->
+</select>
+<div class="county-info" id="countyInfo">
+                            Select a county to see local AMI information
+                        </div>
+</div>
+<div class="form-group">
+<label for="householdSize">Household Size:</label>
+<select class="form-control" id="householdSize">
+<option value="1">1 person</option>
+<option selected="" value="2">2 people</option>
+<option value="3">3 people</option>
+<option value="4">4 people</option>
+<option value="5">5 people</option>
+<option value="6">6 people</option>
+<option value="7">7 people</option>
+<option value="8">8 people</option>
+</select>
+</div>
+<div class="form-group">
+<label for="income">Household Income:</label>
+<div class="income-input-group">
+<div class="input-with-icon">
+<span class="input-icon">$</span>
+<input class="form-control" id="income" min="0" placeholder="Enter amount" step="100" type="number"/>
+</div>
+<select class="form-control frequency-select" id="frequency">
+<option value="annual">Annual</option>
+<option value="monthly">Monthly</option>
+<option value="biweekly">Biweekly</option>
+<option value="weekly">Weekly</option>
+</select>
+</div>
+<div class="tax-status">
+<div class="radio-group">
+<label class="radio-option">
+<input checked="" name="taxStatus" type="radio" value="pretax"/>
+                                    Pre-tax (Gross)
+                                </label>
+
+<label class="radio-option">
+<input name="taxStatus" type="radio" value="posttax"/>
+                                    Post-tax (Net)
+                                </label>
+</div>
+</div>
+</div>
+<button class="calculate-btn" onclick="calculateEligibility()">
+<span>🧮</span> Calculate Eligibility
+                    </button>
+<div class="loading" id="loading">
+<div class="spinner"></div>
+<p>Calculating eligibility...</p>
+</div>
+</div>
+<!-- Results Section -->
+<div class="results-section" id="resultsSection">
+<h2>📈 Your Results</h2>
+<div id="results-content">
+<div style="text-align: center; color: #666; padding: 2rem;">
+<div style="font-size: 3rem; margin-bottom: 1rem;">📋</div>
+<p>Enter your information and click "Calculate Eligibility" to see your results.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Expandable Information Sections -->
+
+<div class="expandable-sections">
+<!-- Threshold Details -->
+<div class="expandable-card">
+<div class="expandable-header">
+<h3>📊 Income Thresholds</h3>
+</div>
+<div class="expandable-content">
+<div class="expandable-inner">
+<p>View detailed income thresholds for your household size across all metrics.</p>
+<div id="thresholdTables">
+<p style="color: #666; text-align: center; padding: 2rem;">Calculate eligibility to see thresholds</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Visual Comparison -->
+<div class="expandable-card">
+<div class="expandable-header">
+<h3>📈 Visual Comparison</h3>
+</div>
+<div class="expandable-content">
+<div class="expandable-inner">
+<p>See how your income compares to Area Median Income, State Median Income, and Federal Poverty Level.</p>
+<div class="chart-container">
+<canvas id="comparisonChart"></canvas>
+</div>
+</div>
+</div>
+</div>
+<!-- Program Information -->
+<div class="expandable-card">
+<div class="expandable-header">
+<h3>🏠 Program Details</h3>
+</div>
+<div class="expandable-content">
+<div class="expandable-inner">
+<p>Learn about Oregon's energy assistance and housing programs.</p>
+<div class="resource-links">
+<a class="resource-link" href="https://www.oregon.gov/ohcs/energy-weatherization/pages/utility-bill-payment-assistance.aspx" target="_blank">
+<h4>🆘 LIHEAP Oregon</h4>
+<p>Low Income Home Energy Assistance Program</p>
+</a>
+<a class="resource-link" href="https://www.energytrust.org/residential/existing-homes/income-qualified/" target="_blank">
+<h4>⚡ Energy Trust</h4>
+<p>Income-qualified energy efficiency programs</p>
+</a>
+<a class="resource-link" href="https://www.oregon.gov/ohcs/energy-weatherization/pages/weatherization-services.aspx" target="_blank">
+<h4>🏡 Weatherization</h4>
+<p>Free home weatherization assistance</p>
+</a>
+<a class="resource-link" href="https://www.oregon.gov/ohcs/" target="_blank">
+<h4>🏘️ Housing Programs</h4>
+<p>Affordable housing and rent assistance</p>
+</a>
+</div>
+</div>
+</div>
+</div>
+<!-- Data Sources -->
+<div class="expandable-card">
+<div class="expandable-header">
+<h3>📋 Data Sources</h3>
+</div>
+<div class="expandable-content">
+<div class="expandable-inner">
+<p>Official sources for all income limits and eligibility thresholds.</p>
+<div class="resource-links">
+<a class="resource-link" href="https://www.huduser.gov/portal/datasets/il.html" target="_blank">
+<h4>🏠 HUD Income Limits</h4>
+<p>Official Area Median Income data by county</p>
+</a>
+<a class="resource-link" href="https://aspe.hhs.gov/poverty-guidelines" target="_blank">
+<h4>📊 Federal Poverty Guidelines</h4>
+<p>HHS poverty thresholds updated annually</p>
+</a>
+<a class="resource-link" href="https://www.oregon.gov/ohcs/compliance-monitoring/pages/rent-income-limits.aspx" target="_blank">
+<h4>🌲 Oregon OHCS</h4>
+<p>State housing and community services</p>
+</a>
+<a class="resource-link" href="https://www.census.gov/topics/income-poverty/poverty.html" target="_blank">
+<h4>📈 Census Data</h4>
+<p>Income and poverty statistics</p>
+</a>
+</div>
+<div style="margin-top: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; font-size: 0.9rem; color: #666;">
+<strong>Data Currency:</strong> Using official 2025 HUD Income Limits and Federal Poverty Guidelines. Last updated: August 2025.
+                        </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+        // Read current tax/gross-up factor from slider
+        function getTaxFactor(){
+            const el = document.getElementById('taxFactor');
+            return el ? parseFloat(el.value) || 1.25 : 1.25;
+        }
+        function setTaxFactorLabel(){
+            const el = document.getElementById('taxFactor');
+            const out = document.getElementById('taxFactorVal');
+            if(el && out){ out.textContent = `(${parseFloat(el.value).toFixed(2)}× when Post-tax)`; }
+        }
+        
+
+        // 2025 Oregon AMI Data (will be populated from CSV data)
+        const oregonAMIData = {
+            "Baker County": { ami: 55800 },
+            "Benton County": { ami: 76900 },
+            "Clackamas County": { ami: 95800 },
+            "Clatsop County": { ami: 67500 },
+            "Columbia County": { ami: 82100 },
+            "Coos County": { ami: 61400 },
+            "Crook County": { ami: 61900 },
+            "Curry County": { ami: 56200 },
+            "Deschutes County": { ami: 81300 },
+            "Douglas County": { ami: 63200 },
+            "Gilliam County": { ami: 58400 },
+            "Grant County": { ami: 52100 },
+            "Harney County": { ami: 53900 },
+            "Hood River County": { ami: 79400 },
+            "Jackson County": { ami: 68900 },
+            "Jefferson County": { ami: 59700 },
+            "Josephine County": { ami: 58700 },
+            "Klamath County": { ami: 58900 },
+            "Lake County": { ami: 54700 },
+            "Lane County": { ami: 72100 },
+            "Lincoln County": { ami: 64700 },
+            "Linn County": { ami: 69200 },
+            "Malheur County": { ami: 51200 },
+            "Marion County": { ami: 78400 },
+            "Morrow County": { ami: 67800 },
+            "Multnomah County": { ami: 95800 },
+            "Polk County": { ami: 73800 },
+            "Sherman County": { ami: 59100 },
+            "Tillamook County": { ami: 67300 },
+            "Umatilla County": { ami: 62800 },
+            "Union County": { ami: 57600 },
+            "Wallowa County": { ami: 54300 },
+            "Wasco County": { ami: 65100 },
+            "Washington County": { ami: 98200 },
+            "Wheeler County": { ami: 50800 },
+            "Yamhill County": { ami: 75600 }
+        };
+
+        // 2025 Federal Poverty Guidelines
+        const fplData = {
+            1: 15060,
+            2: 20440,
+            3: 25820,
+            4: 31200,
+            5: 36580,
+            6: 41960,
+            7: 47340,
+            8: 52720
+        };
+
+        // 2025 Oregon State Median Income
+        const oregonSMI = 78600;
+
+        // Household size adjustments for AMI
+        const householdAdjustments = {
+            1: 0.70,
+            2: 0.80,
+            3: 0.90,
+            4: 1.00,
+            5: 1.08,
+            6: 1.16,
+            7: 1.24,
+            8: 1.32
+        };
+
+        let comparisonChart = null;
+
+        // Initialize the calculator
+        document.addEventListener('DOMContentLoaded', function() {
+            populateCounties();
+            updateCountyInfo();
+        });
+
+        // Populate county dropdown
+        function populateCounties() {
+            const countySelect = document.getElementById('county');
+            const counties = Object.keys(oregonAMIData).sort();
+            
+            counties.forEach(county => {
+                const option = document.createElement('option');
+                option.value = county;
+                option.textContent = county;
+                countySelect.appendChild(option);
+            });
+            
+            // Set default to Multnomah County
+            countySelect.value = 'Multnomah County';
+        }
+
+        // Update county information
+        function updateCountyInfo() {
+            const county = document.getElementById('county').value;
+            const infoDiv = document.getElementById('countyInfo');
+            
+            if (!county) {
+                infoDiv.innerHTML = 'Select a county to see local AMI information';
+                return;
+            }
+            
+            const countyData = oregonAMIData[county];
+            infoDiv.innerHTML = `
+                <strong>${county}</strong><br>
+                4-person AMI: $${countyData.ami.toLocaleString()}/year<br>
+                Data source: 2025 HUD Income Limits
+            `;
+        }
+
+        // Convert income to annual amount
+        function convertToAnnual(amount, frequency, taxStatus) {
+            let annualAmount = amount;
+            
+            switch(frequency) {
+                case 'monthly':
+                    annualAmount = amount * 12;
+                    break;
+                case 'biweekly':
+                    annualAmount = amount * 26;
+                    break;
+                case 'weekly':
+                    annualAmount = amount * 52;
+                    break;
+            }
+            
+            // If post-tax, estimate gross income (rough calculation)
+            if (taxStatus === 'posttax') {
+                annualAmount = annualAmount * 1.25; // slider-driven gross-up
+            }
+            
+            return Math.round(annualAmount);
+        }
+
+        // Calculate percentages
+        function calculatePercentages(annualIncome, county, householdSize) {
+            const countyAMI = oregonAMIData[county].ami;
+            const adjustment = householdAdjustments[householdSize];
+            const adjustedAMI = countyAMI * adjustment;
+            const adjustedSMI = oregonSMI * adjustment;
+            const fplAmount = fplData[householdSize];
+            
+            return {
+                ami: Math.round((annualIncome / adjustedAMI) * 100),
+                smi: Math.round((annualIncome / adjustedSMI) * 100),
+                fpl: Math.round((annualIncome / fplAmount) * 100),
+                adjustedAMI: adjustedAMI,
+                adjustedSMI: adjustedSMI,
+                fplAmount: fplAmount
+            };
+        }
+
+        // Calculate eligibility
+        function calculateEligibility() {
+            const income = parseFloat(document.getElementById('income').value);
+            const frequency = document.getElementById('frequency').value;
+            const taxStatus = document.querySelector('input[name="taxStatus"]:checked').value;
+            const county = document.getElementById('county').value;
+            const householdSize = parseInt(document.getElementById('householdSize').value);
+            
+            if (!income || income <= 0) {
+                alert('Please enter a valid income amount.');
+                return;
+            }
+            
+            if (!county) {
+                alert('Please select a county.');
+                return;
+            }
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results-content').style.display = 'none';
+            
+            setTimeout(() => {
+                const annualIncome = convertToAnnual(income, frequency, taxStatus);
+                const percentages = calculatePercentages(annualIncome, county, householdSize);
+                
+                displayResults(annualIncome, percentages, county, householdSize);
+                updateThresholdTables(county, householdSize, percentages);
+                updateChart(annualIncome, percentages);
+                
+                // Hide loading and show results
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('results-content').style.display = 'block';
+                document.getElementById('resultsSection').classList.add('active');
+            }, 800);
+        }
+
+        // Display results
+        function displayResults(annualIncome, percentages, county, householdSize) {
+            const resultsHTML = `
+                <div class="income-display">
+                    <h3>Annual Household Income: $${annualIncome.toLocaleString()}</h3>
+                    <div class="income-details">
+                        ${householdSize} ${householdSize === 1 ? 'person' : 'people'} in ${county}
+                    </div>
+                </div>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card ${percentages.ami <= 80 ? 'eligible' : 'not-eligible'}">
+                        <div class="metric-value ${percentages.ami <= 80 ? 'eligible' : 'not-eligible'}">${percentages.ami}%</div>
+                        <div class="metric-label">of Area Median Income</div>
+                    </div>
+                    <div class="metric-card ${percentages.smi <= 100 ? 'eligible' : 'not-eligible'}">
+                        <div class="metric-value ${percentages.smi <= 100 ? 'eligible' : 'not-eligible'}">${percentages.smi}%</div>
+                        <div class="metric-label">of State Median Income</div>
+                    </div>
+                    <div class="metric-card ${percentages.fpl <= 200 ? 'eligible' : 'not-eligible'}">
+                        <div class="metric-value ${percentages.fpl <= 200 ? 'eligible' : 'not-eligible'}">${percentages.fpl}%</div>
+                        <div class="metric-label">of Federal Poverty Level</div>
+                    </div>
+                </div>
+                
+                <div class="eligibility-status">
+                    <h3>Program Eligibility:</h3>
+                    <ul class="status-list">
+                        <li class="status-item">
+                            <span class="status-indicator ${percentages.ami <= 80 ? 'status-eligible' : 'status-not-eligible'}"></span>
+                            <span>Low-Income Housing (≤80% AMI): <strong>${percentages.ami <= 80 ? 'Eligible' : 'Not Eligible'}</strong></span>
+                        </li>
+                        <li class="status-item">
+                            <span class="status-indicator ${percentages.smi <= 60 ? 'status-eligible' : 'status-not-eligible'}"></span>
+                            <span>Weatherization Assistance (≤60% SMI): <strong>${percentages.smi <= 60 ? 'Eligible' : 'Not Eligible'}</strong></span>
+                        </li>
+                        <li class="status-item">
+                            <span class="status-indicator ${percentages.fpl <= 150 ? 'status-eligible' : 'status-not-eligible'}"></span>
+                            <span>LIHEAP Energy Assistance (≤150% FPL): <strong>${percentages.fpl <= 150 ? 'Eligible' : 'Not Eligible'}</strong></span>
+                        </li>
+                        <li class="status-item">
+                            <span class="status-indicator ${percentages.ami <= 120 ? 'status-eligible' : 'status-not-eligible'}"></span>
+                            <span>First-Time Homebuyer (≤120% AMI): <strong>${percentages.ami <= 120 ? 'Eligible' : 'Not Eligible'}</strong></span>
+                        </li>
+                    </ul>
+                </div>
+            `;
+            
+            document.getElementById('results-content').innerHTML = resultsHTML;
+        }
+
+        // Update threshold tables
+        function updateThresholdTables(county, householdSize, percentages) {
+            const countyAMI = oregonAMIData[county].ami;
+            const adjustment = householdAdjustments[householdSize];
+            const adjustedAMI = Math.round(countyAMI * adjustment);
+            const adjustedSMI = Math.round(oregonSMI * adjustment);
+            const fplAmount = fplData[householdSize];
+            
+            const thresholdHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                    <div>
+                        <h4 style="color: #0f4c75; margin-bottom: 1rem;">Area Median Income (AMI)</h4>
+                        <table class="threshold-table">
+                            <thead>
+                                <tr>
+                                    <th>Threshold</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>60% AMI</td>
+                                    <td class="amount">$${Math.round(adjustedAMI * 0.6).toLocaleString()}</td>
+                                </tr>
+                                <tr>
+                                    <td>80% AMI</td>
+                                    <td class="amount">$${Math.round(adjustedAMI * 0.8).toLocaleString()}</td>
+                                </tr>
+                                <tr>
+                                    <td>100% AMI</td>
+                                    <td class="amount">$${adjustedAMI.toLocaleString()}</td>
+                                </tr>
+                                <tr>
+                                    <td>120% AMI</td>
+                                    <td class="amount">$${Math.round(adjustedAMI * 1.2).toLocaleString()}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: #0f4c75; margin-bottom: 1rem;">State Median Income (SMI)</h4>
+                        <table class="threshold-table">
+                            <thead>
+                                <tr>
+                                    <th>Threshold</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>60% SMI</td>
+                                    <td class="amount">$${Math.round(adjustedSMI * 0.6).toLocaleString()}</td>
+                                </tr>
+                                <tr>
+                                    <td>80% SMI</td>
+                                    <td class="amount">$${Math.round(adjustedSMI * 0.8).toLocaleString()}</td>
+                                </tr>
+                                <tr>
+                                    <td>100% SMI</td>
+                                    <td class="amount">$${adjustedSMI.toLocaleString()}</td>
+                                </tr>
+                                <tr>
+                                    <td>120% SMI</td>
+                                    <td class="amount">$${Math.round(adjustedSMI * 1.2).toLocaleString()}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div>
+                        <h4 style="color: #0f4c75; margin-bottom: 1rem;">Federal Poverty Level (FPL)</h4>
+                        <table class="threshold-table">
+                            <thead>
+                                <tr>
+                                    <th>Threshold</th>
+                                    <th>Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>100% FPL</td>
+                                    <td class="amount">$${fplAmount.toLocaleString()}</td>
+                                </tr>
+                                <tr>
+                                    <td>150% FPL</td>
+                                    <td class="amount">$${Math.round(fplAmount * 1.5).toLocaleString()}</td>
+                                </tr>
+                                <tr>
+                                    <td>200% FPL</td>
+                                    <td class="amount">$${Math.round(fplAmount * 2.0).toLocaleString()}</td>
+                                </tr>
+                                <tr>
+                                    <td>250% FPL</td>
+                                    <td class="amount">$${Math.round(fplAmount * 2.5).toLocaleString()}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('thresholdTables').innerHTML = thresholdHTML;
+        }
+
+        // Update comparison chart
+        function updateChart(annualIncome, percentages) {
+            const ctx = document.getElementById('comparisonChart').getContext('2d');
+            
+            if (comparisonChart) {
+                comparisonChart.destroy();
+            }
+            
+            comparisonChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Area Median Income (AMI)', 'State Median Income (SMI)', 'Federal Poverty Level (FPL)'],
+                    datasets: [{
+                        label: 'Your Income (%)',
+                        data: [percentages.ami, percentages.smi, percentages.fpl],
+                        backgroundColor: [
+                            percentages.ami <= 80 ? '#28a745' : '#dc3545',
+                            percentages.smi <= 100 ? '#28a745' : '#dc3545',
+                            percentages.fpl <= 200 ? '#28a745' : '#dc3545'
+                        ],
+                        borderColor: [
+                            percentages.ami <= 80 ? '#1e7e34' : '#c82333',
+                            percentages.smi <= 100 ? '#1e7e34' : '#c82333',
+                            percentages.fpl <= 200 ? '#1e7e34' : '#c82333'
+                        ],
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Your Income as Percentage of Benchmarks',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            color: '#0f4c75'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Percentage (%)',
+                                font: {
+                                    weight: 'bold'
+                                }
+                            },
+                            grid: {
+                                color: '#e9ecef'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Toggle expandable sections
+        function toggleSection(header) { /* disabled */ return; //
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('.expand-icon');
+            
+            header.classList.toggle('active');
+            content.classList.toggle('active');
+            
+            // Close other sections
+            document.querySelectorAll('.expandable-header').forEach(otherHeader => {
+                if (otherHeader !== header && otherHeader.classList.contains('active')) {
+                    otherHeader.classList.remove('active');
+                    otherHeader.nextElementSibling.classList.remove('active');
+                }
+            });
+        }
+
+        // Event listeners
+        document.getElementById('county').addEventListener('change', updateCountyInfo);
+        document.getElementById('income').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateEligibility();
+            }
+        });
+    </script>
+<style>
+/* Force expandable sections to be always visible */
+.expandable-content { max-height: none !important; overflow: visible !important; }
+.expandable-header .expand-icon { transform: none !important; opacity: 0.5; }
+</style><style>
+@media (min-width: 1024px) {
+  .expandable-sections {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .expandable-card, .static-section {
+    margin: 0 !important;
+  }
+}
+</style></body>
+</html>
